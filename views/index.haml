@@ -1,0 +1,60 @@
+!!! 5
+%html
+  %head
+    %title Gaia Tags
+    %script(src="http://code.jquery.com/jquery-latest.js" type="text/javascript")
+    %script(src="https://github.com/jzaefferer/jquery-treeview/raw/master/jquery.treeview.js" type="text/javascript")
+    %link(rel="stylesheet" href="http://jquery.bassistance.de/treeview/demo/screen.css" type="text/css")
+    %link(rel="stylesheet" href="http://jquery.bassistance.de/treeview/jquery.treeview.css" type="text/css")
+    :javascript
+      $(document).ready(function() {
+        $(".tag_tree").treeview({
+          collapsed: true,
+          control: "#tag_tree_control"
+        });
+      });
+    %style(type="text/css")
+      :sass
+        body
+          padding: 3em
+        .vfalse
+          color: silver
+        ul 
+          li
+            list-style-position: inside
+            .edit
+              display: none
+          .o2
+            list-style-type: upper-roman
+          .o3
+            list-style-type: upper-alpha
+          .o4
+            list-style-type: decimal
+          .o5
+            list-style-type: lower-alpha
+          .o6
+            list-style-type: disc
+          .o7
+            list-style-type: square
+          .o8
+            list-style-type: circle
+
+  %body
+    %h1 Stupid Gaia Tag Editor
+    %h4 Controls
+    #tag_tree_control
+      %a(title="Collapse the entire tree below" href="#")
+        [-] Collapse All
+      |
+      %a(title="Expand the entire tree below" href="#")
+        [+] Expand All
+      |
+      %a(title="Toggle the tree below, opening closed branches, closing open branches" href="#")
+        [~] Toggle All
+    %h4 Tag Tree
+    %p 
+      Notes:<br />
+      If the name looks <span class='vfalse'>like this</span> then it is marked "not visible" (doesn't show up in tagger)<br />
+      The expand/collaps/toggle logic is not awesome, refresh the page if it gets screwy.
+    %ul.tag_tree= print_tree(@tag_tree)
+

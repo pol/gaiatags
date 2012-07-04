@@ -1,0 +1,27 @@
+.edit{:id => "edit_tag_#{tag[:t_id]}"}
+  %form{:action => "tags/#{tag[:t_id]}", :method => 'POST'}
+    .title
+      %label{:for => 'tag[title]'} Title:
+      %input{:type => 'text', :name => 'tag[title]', :value => tag[:title]}
+    .description
+      %label{:for => 'tag[description]'} Description:
+      %textarea{:name => 'tag[description]'}= tag[:description]
+    .tagtype
+      %label{:for => 'tag[ttype_id]'} Tag Type:
+      %select{:name => 'tag[ttype_id]'}
+        - tag_types.each do |tt|
+          - if tt[:ttype_id] == tag[:ttype_id]
+            %option{:value => tt[:ttype_id], :selected => 'selected'}= tt[:title]
+          - else
+            %option{:value => tt[:ttype_id]}= tt[:title]
+    .parent_id
+      %label{:for => 'tag[parent_id]'} Parent ID:
+      %input{:type => 'text', :name => 'tag[parent_id]', :value => tag[:parent_id]}
+    .is_visible
+      %label{:for => 'tag[is_visible]'} Visible?:
+      - if tag[:is_visible]
+        %input{:type => 'checkbox', :name => 'tag[is_visible]', :checked => 'checked'}
+      - else
+        %input{:type => 'checkbox', :name => 'tag[is_visible]'}
+
+    %input{:type => 'submit'}

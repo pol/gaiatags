@@ -41,6 +41,8 @@
 
   %body
     %h1 Stupid Gaia Tag Editor
+    - if @flash
+      %h2= @flash
     %h4 Controls
     #tag_tree_control
       %a(title="Collapse the entire tree below" href="#")
@@ -53,8 +55,12 @@
         [~] Toggle All
     %h4 Tag Tree
     %p 
-      Notes:<br />
-      If the name looks <span class='vfalse'>like this</span> then it is marked "not visible" (doesn't show up in tagger)<br />
+      Notes:
+      %br
+      If the name looks <span class='vfalse'>like this</span> then it is marked "not visible" (doesn't show up in tagger)
+      %br
       The expand/collaps/toggle logic is not awesome, refresh the page if it gets screwy.
+      %br
+      Click the [e] to edit the tag.
     %ul.tag_tree= print_tree(@tag_tree)
 

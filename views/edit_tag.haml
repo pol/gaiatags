@@ -26,3 +26,4 @@
         %input{:type => 'checkbox', :name => 'tag[is_visible]'}
 
     %input{:type => 'submit'}
+    %span{:class => 'link', :onClick => "$('#edit_tag_#{tag[:t_id]}').toggle()"} Cancel

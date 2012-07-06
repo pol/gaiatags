@@ -43,8 +43,9 @@ helpers do
 
   def print_tree(tree)
     output = "<li><span class='o#{tree.node_depth} v#{tree.content[:is_visible]}'>#{tree.name} : #{tree.content[:title]}</span>"
-    output += " <span onClick=\"$('#edit_tag_#{tree.content[:t_id]}').toggle();\">[e]</span>"
-    output += haml :edit_tag, :locals => {:tag => tree.content, :tagtypes => tag_types }
+    output += "<span onClick=\"fetch_form(#{tree.content[:t_id]});\">[e]</span>"
+    output += "<div id='et_#{tree.content[:t_id]}'></div>"
+    # output += haml :edit_tag, :locals => {:tag => tree.content, :tagtypes => tag_types }
     unless tree.children.empty?
       output += "<ul class='o#{tree.node_depth + 1}'>"
       tree.children.each do |c|
@@ -61,6 +62,11 @@ get '/' do
   @tag_tree = fetch_tag_tree
   @flash = session.delete(:flash)
   haml :index
+end
+
+get '/tags/:t_id' do
+  tag = DB[:tag][:t_id => params[:t_id]].merge( DB[:tag_tree][:t_id => params[:t_id]] )
+  haml :edit_tag, :locals => {:tag => tag}
 end
 
 post '/tags' do
@@ -97,7 +103,7 @@ post '/tags' do
     end
   end
 
-  session[:flash] = "That update probably worked, you should check."
+  session[:flash] = "Updated TagID #{ptag[:t_id]}, it probably worked, you should check."
 
   puts params.inspect
   redirect "/"

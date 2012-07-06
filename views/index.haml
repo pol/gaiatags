@@ -13,6 +13,16 @@
           control: "#tag_tree_control"
         });
       });
+
+      function fetch_form(t_id){
+        $.ajax({
+          url:'/tags/' + t_id, 
+          data_type: 'html'
+        }).done(function (edit_form){
+          $('#et_'+String(t_id)).html(edit_form)
+        });
+      };
+
     %style(type="text/css")
       :sass
         body
@@ -23,11 +33,13 @@
           color: green
         .content
           padding: 10px
+        .link
+          color: blue
+          text-decoration: underline
+          cursor: pointer
         ul 
           li
             list-style-position: inside
-            .edit
-              display: none
           .o2
             list-style-type: upper-roman
           .o3
@@ -58,10 +70,8 @@
         |
         %a(title="Toggle the tree below, opening closed branches, closing open branches" href="#")
           [~] Toggle All
-      %h4 Tag Tree
+      %h4 Notes
       %p 
-        Notes:
-        %br
         If the name looks <span class='vfalse'>like this</span> then it is marked "not visible" (doesn't show up in tagger)
         %br
         The expand/collaps/toggle logic is not awesome, refresh the page if it gets screwy.
@@ -69,5 +79,6 @@
         Click the [e] to edit the tag.
         %br
         WARNING: The system will totally let you create circular heirarchies (resulting in an infinite loop).  Don't do that.  The system will behave emergently if you do it (bizarre and unexpected things are likely to happen).
+      %h4 Tag Tree
       %ul.tag_tree= print_tree(@tag_tree)
 

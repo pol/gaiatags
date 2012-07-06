@@ -1,5 +1,6 @@
 .edit{:id => "edit_tag_#{tag[:t_id]}"}
-  %form{:action => "tags/#{tag[:t_id]}", :method => 'POST'}
+  %form{:action => "tags", :method => 'POST'}
+    %input{:type => 'hidden', :name => 'tag[t_id]', :value => tag[:t_id]}
     .title
       %label{:for => 'tag[title]'} Title:
       %input{:type => 'text', :name => 'tag[title]', :value => tag[:title]}

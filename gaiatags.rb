@@ -40,7 +40,6 @@ helpers do
   def tag_types
     DB[:tagtype_def].all
   end
-  end
 
   def print_tree(tree)
     output = "<li><span class='o#{tree.node_depth} v#{tree.content[:is_visible]}'>#{tree.name} : #{tree.content[:title]}</span>"

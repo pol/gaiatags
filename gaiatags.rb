@@ -4,12 +4,14 @@ require 'haml'
 require 'sass'
 require 'sequel'
 require 'tree'
+require 'json'
+require 'open-uri'
 
 enable :sessions
 
 set :haml, :format => :html5
 
-DB = Sequel.connect('postgres://postgres@localhost:5432/gaia')
+DB = Sequel.connect('postgres://gaia:Qum$ep13@localhost:5432/gaia')
 
 def find_parent(tree, parent_id)
   tree.each do |node|
@@ -18,7 +20,7 @@ def find_parent(tree, parent_id)
 end
 
 def fetch_tag_tree
-  tags = DB["SELECT tt.*, t.title, t.ttype_id, t.description FROM facet.tag_tree AS tt INNER JOIN facet.tag as t ON (tt.t_id = t.t_id) ORDER BY tt.path ASC"]
+  tags = DB[:tag].join(:tag_tree, :t_id => :t_id).order(:path)
 
   tree = Tree::TreeNode.new(0, 'Gaia Tags')
 
@@ -36,7 +38,8 @@ end
 
 helpers do 
   def tag_types
-    DB["SELECT * from facet.tagtype_def"].all
+    DB[:tagtype_def].all
+  end
   end
 
   def print_tree(tree)
@@ -61,22 +64,29 @@ get '/' do
   haml :index
 end
 
-post '/tags/:t_id' do
-  tag = params[:tag]
-  t_id = params[:t_id]
+post '/tags' do
+  ptag = params[:tag]
 
-  new_path = DB["SELECT * FROM facet.tag_tree WHERE t_id = #{tag[:parent_id]}"].first[:path] + '.' + t_id.to_s
+  new_path = DB[:tag_tree].filter(:t_id => ptag[:parent_id]).first[:path] + '.' + ptag[:t_id].to_s
 
-  query = <<-SQLF
-    UPDATE facet.tag SET title = '#{tag[:title]}', description = '#{tag[:description]}', ttype_id = #{tag[:ttype_id]} WHERE t_id = #{t_id};
-    UPDATE facet.tag_tree SET parent_id = #{tag[:parent_id]}, is_visible = #{tag[:is_visible] ? 'true' : 'false'}, path = '#{new_path}' WHERE t_id = #{t_id};
-  SQLF
-  
-  if DB.run(query)
-    session[:flash] = "Updated Tag #{params[:t_id]}<br />#{query}"
-  else
-    session[:flash] = "Update Failed (tell Pol, copy/paste the following): #{query}"
+  tag = DB[:tag].filter(:t_id => ptag[:t_id])
+  tag_tree = DB[:tag_tree].filter(:t_id => ptag[:t_id])
+
+  DB.transaction do
+    tag.update(
+      :title       => ptag[:title], 
+      :description => ptag[:description], 
+      :ttype_id    => ptag[:ttype_id]
+    )
+    tag_tree.update(
+      :parent_id  => ptag[:parent_id],
+      :is_visible => ptag[:is_visible] ? 'true' : 'false',
+      :path       => new_path
+      )
   end
+
+  session[:flash] = "That update probably worked, you should check."
+
   puts params.inspect
   redirect "/"
 end

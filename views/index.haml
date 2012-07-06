@@ -67,5 +67,7 @@
         The expand/collaps/toggle logic is not awesome, refresh the page if it gets screwy.
         %br
         Click the [e] to edit the tag.
+        %br
+        WARNING: The system will totally let you create circular heirarchies (resulting in an infinite loop).  Don't do that.  The system will behave emergently if you do it (bizarre and unexpected things are likely to happen).
       %ul.tag_tree= print_tree(@tag_tree)
 

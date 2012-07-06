@@ -5,5 +5,5 @@ gem 'pg'
 gem 'haml'
 gem 'sass'
 gem 'sequel'
-gem 'tree'
+gem 'rubytree'
 

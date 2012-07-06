@@ -19,6 +19,10 @@
           padding: 3em
         .vfalse
           color: silver
+        .flash
+          color: green
+        .content
+          padding: 10px
         ul 
           li
             list-style-position: inside
@@ -42,25 +46,26 @@
   %body
     %h1 Stupid Gaia Tag Editor
     - if @flash
-      %h2= @flash
-    %h4 Controls
-    #tag_tree_control
-      %a(title="Collapse the entire tree below" href="#")
-        [-] Collapse All
-      |
-      %a(title="Expand the entire tree below" href="#")
-        [+] Expand All
-      |
-      %a(title="Toggle the tree below, opening closed branches, closing open branches" href="#")
-        [~] Toggle All
-    %h4 Tag Tree
-    %p 
-      Notes:
-      %br
-      If the name looks <span class='vfalse'>like this</span> then it is marked "not visible" (doesn't show up in tagger)
-      %br
-      The expand/collaps/toggle logic is not awesome, refresh the page if it gets screwy.
-      %br
-      Click the [e] to edit the tag.
-    %ul.tag_tree= print_tree(@tag_tree)
+      %h3.flash= @flash
+    .content
+      %h4 Controls
+      #tag_tree_control
+        %a(title="Collapse the entire tree below" href="#")
+          [-] Collapse All
+        |
+        %a(title="Expand the entire tree below" href="#")
+          [+] Expand All
+        |
+        %a(title="Toggle the tree below, opening closed branches, closing open branches" href="#")
+          [~] Toggle All
+      %h4 Tag Tree
+      %p 
+        Notes:
+        %br
+        If the name looks <span class='vfalse'>like this</span> then it is marked "not visible" (doesn't show up in tagger)
+        %br
+        The expand/collaps/toggle logic is not awesome, refresh the page if it gets screwy.
+        %br
+        Click the [e] to edit the tag.
+      %ul.tag_tree= print_tree(@tag_tree)
 

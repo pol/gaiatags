@@ -71,6 +71,13 @@ post '/tags' do
   tag = DB[:tag].filter(:t_id => ptag[:t_id])
   tag_tree = DB[:tag_tree].filter(:t_id => ptag[:t_id])
 
+  if  tag_tree.first[:parent_id] != ptag[:parent_id]
+    fix_tree = {
+      :original_path => tag_tree.first[:path],
+      :new_path      => new_path
+    }
+  end
+
   DB.transaction do
     tag.update(
       :title       => ptag[:title], 
@@ -82,6 +89,12 @@ post '/tags' do
       :is_visible => ptag[:is_visible] ? 'true' : 'false',
       :path       => new_path
       )
+
+    if fix_tree
+      # for all of the descendants of the moved tag, move them too
+      children = DB[:tag_tree].filter("path <@ '#{fix_tree[:original_path]}'")
+      children.update("path = text2ltree(regexp_replace(ltree2text(path),'^#{fix_tree[:original_path]}','#{fix_tree[:new_path]}'))")
+    end
   end
 
   session[:flash] = "That update probably worked, you should check."
